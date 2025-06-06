@@ -1,29 +1,23 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"
 
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "9"
 
-# Essential for Next.js routing on Netlify
+# Handle client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = false
 
-# Handle Next.js API routes
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# Handle Next.js static files
+# Handle assets
 [[redirects]]
   from = "/_next/static/*"
   to = "/_next/static/:splat"
   status = 200
+  headers = {Cache-Control = "public, max-age=31536000, immutable"}
 
 [functions]
   directory = ".netlify/functions"
