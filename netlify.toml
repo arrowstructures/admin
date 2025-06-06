@@ -6,16 +6,24 @@
   NODE_VERSION = "18"
   NPM_VERSION = "9"
 
+# Essential for Next.js routing on Netlify
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
 
-[context.production]
-  command = "npm run build"
+# Handle Next.js API routes
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
 
-[context.deploy-preview]
-  command = "npm run build"
+# Handle Next.js static files
+[[redirects]]
+  from = "/_next/static/*"
+  to = "/_next/static/:splat"
+  status = 200
 
-[context.branch-deploy]
-  command = "npm run build"
+[functions]
+  directory = ".netlify/functions"
