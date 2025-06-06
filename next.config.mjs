@@ -9,7 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Remove static export for now to allow server features
+  // Configure for Netlify deployment
+  trailingSlash: true,
   experimental: {
     appDir: true,
   },
