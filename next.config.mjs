@@ -9,11 +9,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Configure for Netlify deployment
+  // For Netlify, we need static export
+  output: 'export',
   trailingSlash: true,
-  experimental: {
-    appDir: true,
-  },
+  distDir: 'out',
 }
 
 export default nextConfig
