@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 
@@ -9,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Save, Eye, Trash2 } from "lucide-react"
+import { ArrowLeft, Save, Eye } from "lucide-react"
 import Link from "next/link"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { ImageUpload } from "@/components/image-upload"
@@ -33,11 +35,7 @@ export default function EditNewsPage() {
   useEffect(() => {
     const fetchNews = async () => {
       setIsLoading(true)
-      const { data, error } = await supabase
-        .from("news")
-        .select("*")
-        .eq("id", params.id)
-        .single()
+      const { data, error } = await supabase.from("news").select("*").eq("id", params.id).single()
 
       if (error) {
         console.error("Error fetching news:", error)
@@ -233,21 +231,3 @@ export default function EditNewsPage() {
     </div>
   )
 }
-
-// ✅ Required for static export of dynamic route [id]
-export async function generateStaticParams() {
-  try {
-    const { data, error } = await supabaseServer.from("news").select("id")
-
-    if (error || !data) {
-      console.error("Supabase error:", error)
-      return []
-    }
-
-    return data.map((item) => ({ id: item.id.toString() }))
-  } catch (err) {
-    console.error("generateStaticParams failed:", err)
-    return []
-  }
-}
-
