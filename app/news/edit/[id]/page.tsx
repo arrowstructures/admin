@@ -18,8 +18,8 @@ import { supabase } from "@/lib/supabaseClient"
 import { toast } from "sonner"
 
 export default function EditNewsPage() {
-  const router = useRouter();
-  const params = useParams();
+  const router = useRouter()
+  const params = useParams()
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     headline: "",
@@ -30,7 +30,6 @@ export default function EditNewsPage() {
     publish_immediately: false,
   })
 
-  // Fetch data on mount
   useEffect(() => {
     const fetchNews = async () => {
       setIsLoading(true)
@@ -233,4 +232,18 @@ export default function EditNewsPage() {
       </form>
     </div>
   )
+}
+
+// ✅ Required for static export of dynamic route [id]
+export async function generateStaticParams() {
+  const { data, error } = await supabase.from("news").select("id")
+
+  if (error || !data) {
+    console.error("Error fetching static params:", error)
+    return []
+  }
+
+  return data.map((item) => ({
+    id: item.id.toString(), // ensure ID is a string
+  }))
 }
