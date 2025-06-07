@@ -236,14 +236,18 @@ export default function EditNewsPage() {
 
 // ✅ Required for static export of dynamic route [id]
 export async function generateStaticParams() {
-  const { data, error } = await supabase.from("news").select("id")
+  try {
+    const { data, error } = await supabaseServer.from("news").select("id")
 
-  if (error || !data) {
-    console.error("Error fetching static params:", error)
+    if (error || !data) {
+      console.error("Supabase error:", error)
+      return []
+    }
+
+    return data.map((item) => ({ id: item.id.toString() }))
+  } catch (err) {
+    console.error("generateStaticParams failed:", err)
     return []
   }
-
-  return data.map((item) => ({
-    id: item.id.toString(), // ensure ID is a string
-  }))
 }
+
