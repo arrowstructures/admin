@@ -74,17 +74,18 @@ export async function middleware(request: NextRequest) {
       data: { session },
     } = await supabase.auth.getSession()
 
-    // Define auth routes
+    // Define routes
     const isAuthRoute = request.nextUrl.pathname.startsWith("/auth")
-
-    // If user is not authenticated and trying to access protected routes
-    if (!session && !isAuthRoute) {
-      return NextResponse.redirect(new URL("/auth/login", request.url))
-    }
+    const isLandingRoute = request.nextUrl.pathname === "/"
 
     // If user is authenticated and trying to access auth routes, redirect to dashboard
     if (session && isAuthRoute) {
-      return NextResponse.redirect(new URL("/", request.url))
+      return NextResponse.redirect(new URL("/dashboard", request.url))
+    }
+
+    // If user is not authenticated and trying to access protected routes
+    if (!session && !isAuthRoute && !isLandingRoute) {
+      return NextResponse.redirect(new URL("/auth/login", request.url))
     }
 
     return response

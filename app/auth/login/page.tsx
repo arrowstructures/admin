@@ -1,156 +1,212 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Eye, EyeOff, LogIn } from "lucide-react"
+import { Eye, EyeOff, LogIn, Palette } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { toast } from "sonner"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { createClient } from "@/lib/supabase/client"
+import { useAuth } from "@/components/auth-provider"
+import { RedLoadingSpinner } from "@/components/loading-spinner"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   })
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!authLoading && user) {
+      console.log("User already authenticated, redirecting to dashboard")
+      router.push("/dashboard")
+    }
+  }, [user, authLoading, router])
+
+  // Don't render login form if user is already authenticated
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <RedLoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  if (user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <RedLoadingSpinner size="lg" />
+          <p className="mt-4 text-gray-600">Redirecting to dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    // Clear error when user starts typing
+    if (error) setError("")
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError("")
 
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       })
 
-      if (error) {
-        toast.error(error.message)
+      if (authError) {
+        setError(authError.message)
         return
       }
 
-      toast.success("Logged in successfully")
-      router.push("/blogs")
-      router.refresh()
+      if (data.user) {
+        console.log("Login successful, user:", data.user.email)
+        // The auth state change will handle the redirect
+      }
     } catch (error) {
-      toast.error("An unexpected error occurred")
-      console.error(error)
+      console.error("Login error:", error)
+      setError("An unexpected error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
-          <CardDescription className="text-center">Enter your credentials to access your account</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="name@example.com"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-8">
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <div className="flex justify-center">
+            <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center shadow-lg">
+              <Palette className="h-7 w-7 text-white" />
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-              </div>
-              <div className="relative">
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Yesp WebStudio</h1>
+            <p className="text-gray-600 mt-2">Admin Panel Login</p>
+          </div>
+        </div>
+
+        {/* Login Form */}
+        <Card className="border border-gray-200 shadow-xl bg-white">
+          <form onSubmit={handleSubmit}>
+            <CardHeader className="space-y-1 pb-6">
+              <CardTitle className="text-2xl font-semibold text-center text-gray-900">Welcome Back</CardTitle>
+              <CardDescription className="text-center text-gray-600">Sign in to access your dashboard</CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              {error && (
+                <Alert className="border-red-200 bg-red-50">
+                  <AlertDescription className="text-red-700 text-sm">{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700 font-medium">
+                  Email Address
+                </Label>
                 <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
                   required
-                  value={formData.password}
+                  value={formData.email}
                   onChange={handleChange}
                   disabled={isLoading}
+                  className="h-11 border-gray-300 focus:border-red-500 focus:ring-red-500"
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isLoading}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-500" />
-                  )}
-                  <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
-                </Button>
               </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700 font-medium">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                    className="h-11 pr-10 border-gray-300 focus:border-red-500 focus:ring-red-500"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-11 w-10 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={isLoading}
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Logging in...
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-500" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-500" />
+                    )}
+                    <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                  </Button>
                 </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Login
+              </div>
+            </CardContent>
+
+            <CardFooter className="flex flex-col space-y-4 pt-6">
+              <Button
+                type="submit"
+                className="w-full h-11 bg-red-500 hover:bg-red-600 text-white font-medium"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <RedLoadingSpinner size="sm" />
+                    <span>Signing in...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-2">
+                    <LogIn className="h-4 w-4" />
+                    Sign In
+                  </div>
+                )}
+              </Button>
+
+              <div className="text-center text-sm space-y-3">
+                <p className="text-gray-600">
+                  Don&apos;t have an account?{" "}
+                  <Link href="/auth/signup" className="font-medium text-red-500 hover:text-red-600 hover:underline">
+                    Create account
+                  </Link>
+                </p>
+
+                <div className="pt-2 border-t border-gray-100">
+                  <p className="text-xs text-gray-500">© 2024 Yesp WebStudio. All rights reserved.</p>
                 </div>
-              )}
-            </Button>
-            <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/auth/signup" className="font-medium text-primary hover:underline">
-                Sign up
-              </Link>
-            </div>
-          </CardFooter>
-        </form>
-      </Card>
+              </div>
+            </CardFooter>
+          </form>
+        </Card>
+      </div>
     </div>
   )
 }
