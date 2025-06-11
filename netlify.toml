@@ -9,6 +9,11 @@
   NODE_VERSION = "18"
   NPM_VERSION = "9"
 
+# Environment variables that should be available during build
+[context.production.environment]
+  NEXT_PUBLIC_SITE_URL = "https://your-site.netlify.app"
+
+# Redirects for client-side routing
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
@@ -19,3 +24,9 @@
   to = "/index.html"
   status = 200
   conditions = {Role = ["admin"]}
+
+# Handle SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
