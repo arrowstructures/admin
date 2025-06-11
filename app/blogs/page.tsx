@@ -209,12 +209,7 @@ export default function BlogsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem asChild>
-                              <Link href={`/projects/${blog.id}`}>
-                                <Eye className="mr-2 h-4 w-4" />
-                                View
-                              </Link>
-                            </DropdownMenuItem>
+                       
                             <DropdownMenuItem asChild>
                               <Link href={`/blogs/edit/${blog.id}`}>
                                 <Edit className="mr-2 h-4 w-4" />
