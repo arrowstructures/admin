@@ -200,9 +200,7 @@ export default function LoginPage() {
 </Link>
                 </p>
 
-                <div className="pt-2 border-t border-gray-100">
-                  <p className="text-xs text-gray-500">© 2024 Yesp WebStudio. All rights reserved.</p>
-                </div>
+            
               </div>
             </CardFooter>
           </form>
