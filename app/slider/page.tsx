@@ -7,34 +7,33 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Plus, Search, Eye, Edit, Trash2, Mail, Phone, Calendar, User } from "lucide-react"
+import { MoreHorizontal, Plus, Search, Eye, Edit, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 import { toast } from "sonner"
 
-
 type Slider = {
-  id:string;
-  title: string;
-  description: string;
-  slider_image: string;
+  id: string
+  title: string
+  description: string
+  slider_image: string
 }
 
 export default function SliderPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [slider, setSlider] = useState<Slider[]>([]);
+  const [slider, setSlider] = useState<Slider[]>([])
 
   useEffect(() => {
     const fetchSlider = async () => {
-      const {data, error} = await supabase.from("slider").select("*");
-      if(error){
-        console.log("Error fetching team: ", error);
-      }else{
-        setSlider(data as Slider[]);
+      const { data, error } = await supabase.from("slider").select("*")
+      if (error) {
+        console.log("Error fetching team: ", error)
+      } else {
+        setSlider(data as Slider[])
       }
-    };
-    fetchSlider();
-  })
+    }
+    fetchSlider()
+  }, [])
 
   const filteredTeamMembers = slider.filter(
     (member) =>
@@ -42,18 +41,17 @@ export default function SliderPage() {
       member.description.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("slider").delete().eq("id", id);
+    const { error } = await supabase.from("slider").delete().eq("id", id)
 
     if (error) {
-      toast.error("Failed to delete project.");
-      console.error("Delete error:", error);
+      toast.error("Failed to delete project.")
+      console.error("Delete error:", error)
     } else {
-      toast.success("Slider deleted successfully!");
-      setSlider((prev) => prev.filter((team) => team.id !== id)); // client-side update
+      toast.success("Slider deleted successfully!")
+      setSlider((prev) => prev.filter((team) => team.id !== id)) // client-side update
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -65,7 +63,7 @@ export default function SliderPage() {
         <Button asChild>
           <Link href="/slider/add">
             <Plus className="mr-2 h-4 w-4" />
-            Add Slider 
+            Add Slider
           </Link>
         </Button>
       </div>
@@ -145,7 +143,6 @@ export default function SliderPage() {
                 <TableRow key={member.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                     
                       <div>
                         <div className="font-medium">{member.title}</div>
                       </div>
@@ -156,7 +153,7 @@ export default function SliderPage() {
                       <div className="font-medium">{member.description}</div>
                     </div>
                   </TableCell>
-                    <TableCell>
+                  <TableCell>
                     <div>
                       <div className="font-medium">{member.slider_image}</div>
                     </div>

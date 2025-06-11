@@ -7,36 +7,35 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Plus, Search, Eye, Edit, Trash2, Mail, Phone, Calendar, User } from "lucide-react"
+import { MoreHorizontal, Plus, Search, Eye, Edit, Trash2, Mail, User } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 import { toast } from "sonner"
 
-
 type Team = {
-  id:string;
-  name: string;
-  email: string;
-  mobile_number: number;
-  designation: string;
-  profile_image: string;
+  id: string
+  name: string
+  email: string
+  mobile_number: number
+  designation: string
+  profile_image: string
 }
 
 export default function TeamPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [team, setTeams] = useState<Team[]>([]);
+  const [team, setTeams] = useState<Team[]>([])
 
   useEffect(() => {
     const fetchTeams = async () => {
-      const {data, error} = await supabase.from("team_members").select("*");
-      if(error){
-        console.log("Error fetching team: ", error);
-      }else{
-        setTeams(data as Team[]);
+      const { data, error } = await supabase.from("team_members").select("*")
+      if (error) {
+        console.log("Error fetching team: ", error)
+      } else {
+        setTeams(data as Team[])
       }
-    };
-    fetchTeams();
-  })
+    }
+    fetchTeams()
+  }, [])
 
   const filteredTeamMembers = team.filter(
     (member) =>
@@ -45,18 +44,17 @@ export default function TeamPage() {
       member.designation.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("team_members").delete().eq("id", id);
+    const { error } = await supabase.from("team_members").delete().eq("id", id)
 
     if (error) {
-      toast.error("Failed to delete project.");
-      console.error("Delete error:", error);
+      toast.error("Failed to delete project.")
+      console.error("Delete error:", error)
     } else {
-      toast.success("Project deleted successfully!");
-      setTeams((prev) => prev.filter((team) => team.id !== id)); // client-side update
+      toast.success("Project deleted successfully!")
+      setTeams((prev) => prev.filter((team) => team.id !== id)) // client-side update
     }
-  };
+  }
 
   return (
     <div className="space-y-6">

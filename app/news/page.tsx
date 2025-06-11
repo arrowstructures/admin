@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal, Plus, Search, Eye, Edit, Trash2 } from "lucide-react"
 import Link from "next/link"
@@ -13,14 +12,14 @@ import { supabase } from "@/lib/supabaseClient"
 import { toast } from "sonner"
 
 type News = {
-  id: string;
-  headline: string;
-  summary: string;
-  content: string;
-  image: string;
+  id: string
+  headline: string
+  summary: string
+  content: string
+  image: string
 }
 export default function NewsPage() {
-    const [news, setNews] = useState<News[]>([])
+  const [news, setNews] = useState<News[]>([])
   const [searchTerm, setSearchTerm] = useState("")
 
   // Fetch news from Supabase
@@ -38,17 +37,17 @@ export default function NewsPage() {
     fetchNews()
   }, [])
 
-    const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("news").delete().eq("id", id);
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("news").delete().eq("id", id)
 
     if (error) {
-      toast.error("Failed to delete news.");
-      console.error("Delete error:", error);
+      toast.error("Failed to delete news.")
+      console.error("Delete error:", error)
     } else {
-      toast.success("News deleted successfully!");
-      setNews((prev) => prev.filter((project) => project.id !== id)); // client-side update
+      toast.success("News deleted successfully!")
+      setNews((prev) => prev.filter((project) => project.id !== id)) // client-side update
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -93,13 +92,12 @@ export default function NewsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {news.map((news) => (
-                <TableRow key={news.id}>
-                  <TableCell className="font-medium">{news.headline}</TableCell>
-                  <TableCell>{news.summary.toLocaleString()}</TableCell>
-                  <TableCell>{news.content}</TableCell>
+              {news.map((newsItem) => (
+                <TableRow key={newsItem.id}>
+                  <TableCell className="font-medium">{newsItem.headline}</TableCell>
+                  <TableCell>{newsItem.summary}</TableCell>
+                  <TableCell>{newsItem.content}</TableCell>
                   <TableCell>
-                  <TableCell></TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -108,18 +106,18 @@ export default function NewsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <Link href={`/news/${news.id}`}>
+                          <Link href={`/news/${newsItem.id}`}>
                             <Eye className="mr-2 h-4 w-4" />
                             View
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/news/edit/${news.id}`}>
+                          <Link href={`/news/edit/${newsItem.id}`}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(news.id)}>
+                        <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(newsItem.id)}>
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete
                         </DropdownMenuItem>

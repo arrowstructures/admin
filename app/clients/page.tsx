@@ -7,19 +7,19 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Plus, Search, Eye, Edit, Trash2, Phone, Mail, Building, Star } from "lucide-react"
+import { MoreHorizontal, Plus, Search, Eye, Edit, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 import { toast } from "sonner"
 
 type Client = {
-  id: string;
-  client_name: string;
-  mobile_number: string;
-  email: string;
-  company_name: string;
-  location: string;
-  client_logo_url: string;
+  id: string
+  client_name: string
+  mobile_number: string
+  email: string
+  company_name: string
+  location: string
+  client_logo_url: string
 }
 
 export default function ClientsPage() {
@@ -27,19 +27,17 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([])
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-
   useEffect(() => {
     const fetchClients = async () => {
-      const {data, error} = await  supabase.from("clients").select("*")
+      const { data, error } = await supabase.from("clients").select("*")
       if (error) {
         console.error("Error fetching clients:", error)
-      }
-      else {
+      } else {
         setClients(data as Client[])
       }
-    };
+    }
     fetchClients()
-  })
+  }, [])
   const filteredClients = clients.filter(
     (client) =>
       client.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -160,12 +158,8 @@ export default function ClientsPage() {
                       <div className="font-medium">{client.company_name}</div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    {client.email }
-                  </TableCell>
-                  <TableCell>
-                    {client.mobile_number}
-                  </TableCell>
+                  <TableCell>{client.email}</TableCell>
+                  <TableCell>{client.mobile_number}</TableCell>
                   <TableCell className="font-medium">{client.location}</TableCell>
                   <TableCell>
                     <DropdownMenu>

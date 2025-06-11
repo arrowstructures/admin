@@ -12,7 +12,6 @@ import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
 import { toast } from "sonner"
 
-
 type Blog = {
   id: string
   title: string
@@ -42,12 +41,10 @@ export default function BlogsPage() {
         .select("id, title, excerpt, category, tag")
         .order("id", { ascending: false })
 
-        console.log("Fetched blogs:", blogData)
+      console.log("Fetched blogs:", blogData)
 
       // Fetch categories
-      const { data: categoryData, error: categoryError } = await supabase
-        .from("blogs_category")
-        .select("id, name")
+      const { data: categoryData, error: categoryError } = await supabase.from("blogs_category").select("id, name")
 
       if (blogError) {
         console.error("Error fetching blogs:", blogError.message)
@@ -67,17 +64,17 @@ export default function BlogsPage() {
     fetchData()
   }, [])
 
-    const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("projects").delete().eq("id", id);
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("blogs").delete().eq("id", id) // Changed from "projects" to "blogs"
 
     if (error) {
-      toast.error("Failed to delete project.");
-      console.error("Delete error:", error);
+      toast.error("Failed to delete blog.")
+      console.error("Delete error:", error)
     } else {
-      toast.success("Project deleted successfully!");
-      setBlogs((prev) => prev.filter((blogs) => blogs.id !== id)); // client-side update
+      toast.success("Blog deleted successfully!")
+      setBlogs((prev) => prev.filter((blog) => blog.id !== id))
     }
-  };
+  }
 
   // Helper function to get category name by category_id
   // function getCategoryName(ca: number) {
@@ -95,12 +92,10 @@ export default function BlogsPage() {
   return (
     <div className="space-y-6">
       {/* ... header and add blog button unchanged ... */}
-            <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Blogs</h1>
-          <p className="text-muted-foreground">
-            Manage your construction blogs and track progress
-          </p>
+          <p className="text-muted-foreground">Manage your construction blogs and track progress</p>
         </div>
         <Button asChild>
           <Link href="/blogs/add">
@@ -113,12 +108,8 @@ export default function BlogsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total blogs
-            </CardTitle>
-            <Badge className="bg-blue-100 text-blue-800">
-              {blogs.length}
-            </Badge>
+            <CardTitle className="text-sm font-medium">Total blogs</CardTitle>
+            <Badge className="bg-blue-100 text-blue-800">{blogs.length}</Badge>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{blogs.length}</div>
@@ -129,12 +120,10 @@ export default function BlogsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total category</CardTitle>
-            <Badge className="bg-yellow-100 text-yellow-800">
-              {blogs.filter(blog => blog.category).length}
-            </Badge>
+            <Badge className="bg-yellow-100 text-yellow-800">{blogs.filter((blog) => blog.category).length}</Badge>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{blogs.filter(blog => blog.category).length}</div>
+            <div className="text-2xl font-bold">{blogs.filter((blog) => blog.category).length}</div>
             <p className="text-xs text-muted-foreground">Currently category</p>
           </CardContent>
         </Card>
@@ -142,15 +131,11 @@ export default function BlogsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total tags</CardTitle>
-            <Badge className="bg-green-100 text-green-800">
-              {blogs.filter(blog => blog.tag).length}
-            </Badge>
+            <Badge className="bg-green-100 text-green-800">{blogs.filter((blog) => blog.tag).length}</Badge>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold"> {blogs.filter(blog => blog.tag).length}</div>
-            <p className="text-xs text-muted-foreground">
-              Currently tags
-            </p>
+            <div className="text-2xl font-bold"> {blogs.filter((blog) => blog.tag).length}</div>
+            <p className="text-xs text-muted-foreground">Currently tags</p>
           </CardContent>
         </Card>
 
@@ -216,36 +201,36 @@ export default function BlogsPage() {
                       <TableCell>{blog.excerpt}</TableCell>
                       <TableCell>{blog.category}</TableCell>
                       <TableCell>{blog.tag}</TableCell>
-                                          <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link href={`/projects/${blog.id}`}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/blogs/edit/${blog.id}`}>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(blog.id)}
-                            className="text-red-600 cursor-pointer"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <Link href={`/projects/${blog.id}`}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                View
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link href={`/blogs/edit/${blog.id}`}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(blog.id)}
+                              className="text-red-600 cursor-pointer"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
