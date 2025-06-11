@@ -75,7 +75,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 p-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-red-50 to-white rounded-lg p-6 border border-red-100">
+      <div className="bg-gradient-to-r from-red-50 to-black rounded-lg p-6 border border-red-100">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">Welcome back!</h1>
@@ -108,7 +108,7 @@ export default function DashboardPage() {
                   asChild
                   variant="outline"
                   size="sm"
-                  className="w-full group-hover:bg-red-500 group-hover:text-white group-hover:border-red-500 transition-colors"
+                  className="w-full group-hover:bg-red-500 group-hover:text-black group-hover:border-red-500 transition-colors"
                 >
                   <Link href={action.href} className="flex items-center justify-center gap-2">
                     Manage
