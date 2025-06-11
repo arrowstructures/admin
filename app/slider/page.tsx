@@ -79,36 +79,7 @@ export default function SliderPage() {
             <p className="text-xs text-muted-foreground">Team members</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Slider</CardTitle>
-            <Badge className="bg-green-100 text-green-800">4</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">4</div>
-            <p className="text-xs text-muted-foreground">Currently working</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Departments</CardTitle>
-            <Badge className="bg-purple-100 text-purple-800">4</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">4</div>
-            <p className="text-xs text-muted-foreground">Active departments</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Experience</CardTitle>
-            <Badge className="bg-yellow-100 text-yellow-800">9 yrs</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">9</div>
-            <p className="text-xs text-muted-foreground">Years average</p>
-          </CardContent>
-        </Card>
+      
       </div>
 
       <Card>
