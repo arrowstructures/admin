@@ -1,16 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  trailingSlash: true,
-  images: {
-    unoptimized: true
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
-  }
-}
+  },
+  images: {
+    unoptimized: true,
+  },
+  // Remove output: 'export' for Netlify deployment with server functions
+  experimental: {
+    serverComponentsExternalPackages: ['@supabase/supabase-js'],
+  },
+};
 
-export default nextConfig
+export default nextConfig;

@@ -1,7 +1,7 @@
 "use client"
 
 import type * as React from "react"
-import { Building2, Users, FolderOpen, Briefcase, Newspaper, Images, MessageSquare, User } from "lucide-react"
+import { Building2, Users, FolderOpen, Briefcase, Newspaper, ImageIcon, MessageSquare, User } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { Sidebar, SidebarContent, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
@@ -46,7 +46,7 @@ const data = {
     {
       title: "Slider",
       url: "/slider",
-      icon: Images,
+      icon: ImageIcon,
     },
   ],
 }
