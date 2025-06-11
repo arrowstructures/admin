@@ -95,12 +95,10 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center shadow-lg">
-              <Palette className="h-7 w-7 text-white" />
-            </div>
+          
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Yesp WebStudio</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Yesp Web Studio</h1>
             <p className="text-gray-600 mt-2">Admin Panel Login</p>
           </div>
         </div>
@@ -194,9 +192,12 @@ export default function LoginPage() {
               <div className="text-center text-sm space-y-3">
                 <p className="text-gray-600">
                   Don&apos;t have an account?{" "}
-                  <Link href="/auth/signup" className="font-medium text-red-500 hover:text-red-600 hover:underline">
-                    Create account
-                  </Link>
+                 <Link
+  href="mailto:contact@yesptech.in"
+  className="font-medium text-red-500 hover:text-red-600 hover:underline"
+>
+  contact@yesptech.in
+</Link>
                 </p>
 
                 <div className="pt-2 border-t border-gray-100">
