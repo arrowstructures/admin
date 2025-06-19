@@ -1,17 +1,22 @@
+import "@/styles/globals.css"
+
+
 import type React from "react"
-import type { Metadata } from "next"
+
 import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
-import { AuthProvider } from "@/components/auth-provider"
+
+
+import { SonnerProvider } from "@/components/sonner-provider"
+import { StorageInitializer } from "@/components/storage-initializer"
+import { SupabaseAuthProvider } from "@/providers/supabase-auth-provider"
+import MainLayout from "@/components/layouts/main-layout"
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
-  title: "Arrow Structures Admin",
-  description: "Admin panel for Arrow Structures",
-  generator: "v0.dev",
+export const metadata = {
+  title: "Arrow Structures - Structural Consultancy",
+  description: "Innovative and sustainable structural solutions for modern construction projects",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -20,12 +25,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <AuthProvider>{children}</AuthProvider>
-          <Toaster />
-        </ThemeProvider>
+        <SupabaseAuthProvider>
+          <StorageInitializer />
+          <MainLayout>{children}</MainLayout>
+          <SonnerProvider />
+        </SupabaseAuthProvider>
       </body>
     </html>
   )
