@@ -9,10 +9,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Remove output: 'export' for Netlify deployment with server functions
-  experimental: {
-    serverComponentsExternalPackages: ['@supabase/supabase-js'],
-  },
-};
+}
 
-export default nextConfig;
+export default nextConfig

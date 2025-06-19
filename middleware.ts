@@ -1,109 +1,52 @@
-import { createServerClient } from "@supabase/ssr"
-import { NextResponse, type NextRequest } from "next/server"
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  // Skip middleware for static files and API routes
-  if (
-    request.nextUrl.pathname.startsWith("/_next") ||
-    request.nextUrl.pathname.startsWith("/api") ||
-    request.nextUrl.pathname.includes(".")
-  ) {
-    return NextResponse.next()
-  }
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
 
-  // Check if environment variables are available
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.error("Missing Supabase environment variables")
-    return NextResponse.next()
-  }
+  // Check if the user is authenticated
+  const isAuthenticated = !!session;
 
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  })
+  // Get the pathname
+  const path = req.nextUrl.pathname;
 
-  try {
-    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-      cookies: {
-        get(name) {
-          return request.cookies.get(name)?.value
-        },
-        set(name, value, options) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-        },
-        remove(name, options) {
-          request.cookies.set({
-            name,
-            value: "",
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
-            name,
-            value: "",
-            ...options,
-          })
-        },
-      },
-    })
+  // Define routes
+  const isArticleViewRoute = path.match(/^\/articles\/view\/[^/]+$/) !== null;
+  const isAuthRoute = path.startsWith("/auth/");
 
-    // Get the current session
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
+  // All other article routes are protected
+  const isProtectedArticleRoute =
+    path.startsWith("/articles/") && !isArticleViewRoute;
+  const isArticlesListRoute = path === "/articles";
 
-    // Define routes
-    const isAuthRoute = request.nextUrl.pathname.startsWith("/auth")
-    const isLandingRoute = request.nextUrl.pathname === "/"
-
-    // If user is authenticated and trying to access auth routes, redirect to dashboard
-    if (session && isAuthRoute) {
-      return NextResponse.redirect(new URL("/dashboard", request.url))
+  // Redirect logic
+  if (!isAuthenticated) {
+    // If trying to access protected routes, redirect to login
+    if (isProtectedArticleRoute || isArticlesListRoute) {
+      const redirectUrl = new URL("/login", req.url);
+      redirectUrl.searchParams.set("redirect", req.nextUrl.pathname);
+      return NextResponse.redirect(redirectUrl);
     }
-
-    // If user is not authenticated and trying to access protected routes
-    if (!session && !isAuthRoute && !isLandingRoute) {
-      return NextResponse.redirect(new URL("/auth/login", request.url))
-    }
-
-    return response
-  } catch (error) {
-    console.error("Middleware error:", error)
-    return NextResponse.next()
+  } else if (isAuthRoute) {
+    // Redirect authenticated users away from auth pages
+    return NextResponse.redirect(new URL("/articles", req.url));
   }
+
+  return res;
 }
 
+// Only run middleware on specific paths
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - api routes
-     */
-    "/((?!_next/static|_next/image|favicon.ico|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/articles",
+    "/articles/:path*",
+    "/auth/:path*",
+    "/public-articles",
   ],
-}
+};
