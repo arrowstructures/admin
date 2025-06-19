@@ -136,15 +136,15 @@ export function ClientLogos({ clients: propClients }: ClientLogosProps) {
 
   if (loading) {
     return (
-      <section className="py-12 md:py-16 bg-gray-50 overflow-hidden">
-        <div className="container">
+      <section className="py-8 md:py-12 lg:py-16 bg-gray-50 overflow-hidden">
+        <div className="container px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Clients</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Our Clients</h2>
             <p className="text-muted-foreground">Trusted by leading organizations across various industries</p>
           </div>
-          <div className="flex justify-center items-center space-x-16">
+          <div className="flex justify-center items-center space-x-8 md:space-x-16">
             {Array.from({ length: 8 }).map((_, index) => (
-              <div key={index} className="flex-shrink-0 w-48 h-24 bg-gray-200 animate-pulse rounded" />
+              <div key={index} className="flex-shrink-0 w-32 h-16 md:w-48 md:h-24 bg-gray-200 animate-pulse rounded" />
             ))}
           </div>
         </div>
@@ -153,35 +153,35 @@ export function ClientLogos({ clients: propClients }: ClientLogosProps) {
   }
 
   return (
-    <section className="py-12 md:py-16 bg-gray-50 overflow-hidden">
-      <div className="container">
+    <section className="py-8 md:py-12 lg:py-16 bg-gray-50 overflow-hidden">
+      <div className="container px-4 md:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Our Clients</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Our Clients</h2>
           <p className="text-muted-foreground">Trusted by leading organizations across various industries</p>
         </div>
 
         <div className="relative">
-          <div className="flex animate-scroll space-x-16">
+          <div className="flex animate-scroll space-x-8 md:space-x-16">
             {/* First set of logos */}
             {clientLogos.map((client) => (
               <div
                 key={`first-${client.id}`}
-                className="flex-shrink-0 flex items-center justify-center w-48 h-24 transition-all duration-300 hover:scale-105"
+                className="flex-shrink-0 flex items-center justify-center w-32 h-16 md:w-48 md:h-24 transition-all duration-300 hover:scale-105"
               >
                 <Image
                   src={
                     client.client_logo_url && client.client_logo_url.trim() !== ""
                       ? client.client_logo_url
-                      : `/placeholder.svg?height=90&width=180&text=${encodeURIComponent(client.company_name || client.client_name)}`
+                      : `/placeholder.svg?height=60&width=120&text=${encodeURIComponent(client.company_name || client.client_name)}`
                   }
                   alt={`${client.company_name || client.client_name} logo`}
-                  width={180}
-                  height={90}
+                  width={120}
+                  height={60}
                   className="max-w-full max-h-full object-contain"
                   onError={(e) => {
                     // Fallback to placeholder if image fails to load
                     const target = e.target as HTMLImageElement
-                    target.src = `/placeholder.svg?height=90&width=180&text=${encodeURIComponent(client.company_name || client.client_name)}`
+                    target.src = `/placeholder.svg?height=60&width=120&text=${encodeURIComponent(client.company_name || client.client_name)}`
                   }}
                 />
               </div>
@@ -190,22 +190,22 @@ export function ClientLogos({ clients: propClients }: ClientLogosProps) {
             {clientLogos.map((client) => (
               <div
                 key={`second-${client.id}`}
-                className="flex-shrink-0 flex items-center justify-center w-48 h-24 transition-all duration-300 hover:scale-105"
+                className="flex-shrink-0 flex items-center justify-center w-32 h-16 md:w-48 md:h-24 transition-all duration-300 hover:scale-105"
               >
                 <Image
                   src={
                     client.client_logo_url && client.client_logo_url.trim() !== ""
                       ? client.client_logo_url
-                      : `/placeholder.svg?height=90&width=180&text=${encodeURIComponent(client.company_name || client.client_name)}`
+                      : `/placeholder.svg?height=60&width=120&text=${encodeURIComponent(client.company_name || client.client_name)}`
                   }
                   alt={`${client.company_name || client.client_name} logo`}
-                  width={180}
-                  height={90}
+                  width={120}
+                  height={60}
                   className="max-w-full max-h-full object-contain"
                   onError={(e) => {
                     // Fallback to placeholder if image fails to load
                     const target = e.target as HTMLImageElement
-                    target.src = `/placeholder.svg?height=90&width=180&text=${encodeURIComponent(client.company_name || client.client_name)}`
+                    target.src = `/placeholder.svg?height=60&width=120&text=${encodeURIComponent(client.company_name || client.client_name)}`
                   }}
                 />
               </div>
@@ -225,7 +225,7 @@ export function ClientLogos({ clients: propClients }: ClientLogosProps) {
         }
         
         .animate-scroll {
-          animation: scroll 10s linear infinite;
+          animation: scroll 8s linear infinite;
         }
         
         .animate-scroll:hover {
